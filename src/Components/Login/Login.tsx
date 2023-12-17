@@ -1,19 +1,33 @@
 /* eslint-disable react/no-unknown-property */
 
-import { useState } from "react";
+import React, { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 
-const Login = () => {
-    const [isFocused, setIsFocused] = useState(false);
-    const [isValid, setIsValid] = useState(true);
-    const [email, setEmail] = useState('');
+const Login: React.FC = () => {
+    const [isFocused, setIsFocused] = useState<boolean>(false);
+    const [isValid, setIsValid] = useState<boolean>(true);
+    const [email, setEmail] = useState<string>('');
+    const [pass, setPass] = useState<string>('');
 
     const handleFocus = () => {
         setIsFocused(true);
     };
 
+    // useEffect(() => {
+    //     console.log("email:", email);
+    //     console.log("pass:", pass);
+    // }, [email, pass]);
+
     const handleBlur = () => {
         setIsFocused(false);
+    };
+
+    const handlePassChange = (e) => {
+        const { value } = e.target;
+        setPass(value);
+
+
     };
 
     const handleEmailChange = (event) => {
@@ -21,6 +35,7 @@ const Login = () => {
         setEmail(value);
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         setIsValid(emailRegex.test(value));
+
     };
     return (
         <>
@@ -75,14 +90,15 @@ const Login = () => {
                         <div className="mt-7">
                             <label className="text-[#344054] font-medium ">Password</label>
                             <br />
-                            <input class="mt-0.5 shadow appearance-none border rounded-lg w-full py-[10px] px-[14px] text-gray-700 leading-tight focus:outline-none focus:border-[#9E7AF4] focus:ring-4 focus:ring-[#dbc4fc]" id="username" type="password" placeholder="Enter Password" />
+                            <input className="mt-0.5 shadow appearance-none border rounded-lg w-full py-[10px] px-[14px] text-gray-700 leading-tight focus:outline-none focus:border-[#9E7AF4] focus:ring-4 focus:ring-[#dbc4fc]" id="username" type="password" placeholder="Enter Password" onChange={handlePassChange} />
                         </div>
 
                         <button className="mt-[30px] w-full rounded-lg border-2 border-[#6941C6] bg-[#6941C6] font-semibold text-white py-[10px] px-[18px] hover:bg-[#9062fb] hover:border-[#9062fb]">Sign In</button>
 
-                        <h1 className=" font-medium mt-6">
+                        <h1 className="font-medium mt-6">
                             <span className="text-[#B0B7C3]">Don’t have an account?</span>
-                            <span className="text-[#377DFF]"> Sign Up</span></h1>
+                            <NavLink to="/signup" className="text-[#377DFF]"> Sign Up</NavLink>
+                        </h1>
                     </div>
                 </div>
             </div>
