@@ -8,6 +8,8 @@ import {
 import './index.css'
 import Login from './Components/Login/Login.tsx';
 import SignUp from './Components/SignUp/SignUp.tsx';
+import Home from './Pages/Home/Home.tsx';
+import Users from './Pages/Users/Users.tsx';
 
 const router = createBrowserRouter([
   {
@@ -17,6 +19,16 @@ const router = createBrowserRouter([
   {
     path: "signup/",
     element: <SignUp></SignUp>
+  },
+  {
+    path: "/",
+    element: <Home></Home>,
+    children: [
+      {
+        path: "users/",
+        element: <Users></Users>
+      }
+    ],
   },
 ]);
 
