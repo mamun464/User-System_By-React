@@ -1,23 +1,25 @@
-/* eslint-disable react/no-unknown-property */
-
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-
+import { loginUser } from '../../redux/authSlice'; // Update the path ../redux/authSlice
+import { RootState } from '../../redux/store';
+import store from '../../redux/store';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login: React.FC = () => {
+    const dispatch = useDispatch();
+    const authStatus = useSelector((state: RootState) => state.auth.status);
+    const authError = useSelector((state: RootState) => state.auth.error);
+
     const [isFocused, setIsFocused] = useState<boolean>(false);
     const [isValid, setIsValid] = useState<boolean>(true);
     const [email, setEmail] = useState<string>('');
-    const [pass, setPass] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
 
     const handleFocus = () => {
         setIsFocused(true);
     };
-
-    // useEffect(() => {
-    //     console.log("email:", email);
-    //     console.log("pass:", pass);
-    // }, [email, pass]);
 
     const handleBlur = () => {
         setIsFocused(false);
@@ -25,9 +27,7 @@ const Login: React.FC = () => {
 
     const handlePassChange = (e) => {
         const { value } = e.target;
-        setPass(value);
-
-
+        setPassword(value);
     };
 
     const handleEmailChange = (event) => {
@@ -35,8 +35,23 @@ const Login: React.FC = () => {
         setEmail(value);
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         setIsValid(emailRegex.test(value));
-
     };
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        // Dispatch the login action
+        dispatch(loginUser({ email, password }));
+    };
+
+    useEffect(() => {
+        if (authStatus === 'failed') {
+            // Handle authentication error (e.g., display an error message)
+            console.log('Authentication error:', authError);
+        }
+    }, [authStatus, authError]);
+
+
     return (
         <>
             <div className="w-screen h-screen font-inter">
@@ -93,7 +108,7 @@ const Login: React.FC = () => {
                             <input className="mt-0.5 shadow appearance-none border rounded-lg w-full py-[10px] px-[14px] text-gray-700 leading-tight focus:outline-none focus:border-[#9E7AF4] focus:ring-4 focus:ring-[#dbc4fc]" id="username" type="password" placeholder="Enter Password" onChange={handlePassChange} />
                         </div>
 
-                        <button className="mt-[30px] w-full rounded-lg border-2 border-[#6941C6] bg-[#6941C6] font-semibold text-white py-[10px] px-[18px] hover:bg-[#9062fb] hover:border-[#9062fb]">Sign In</button>
+                        <button className="mt-[30px] w-full rounded-lg border-2 border-[#6941C6] bg-[#6941C6] font-semibold text-white py-[10px] px-[18px] hover:bg-[#9062fb] hover:border-[#9062fb]" type='submit' onClick={handleLogin}>Sign In</button>
 
                         <h1 className="font-medium mt-6">
                             <span className="text-[#B0B7C3]">Don’t have an account?</span>
@@ -101,6 +116,7 @@ const Login: React.FC = () => {
                         </h1>
                     </div>
                 </div>
+                <ToastContainer></ToastContainer>
             </div>
         </>
     );
