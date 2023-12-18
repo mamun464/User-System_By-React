@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { NavLink, useNavigate } from 'react-router-dom';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { registerUser } from '../../redux/registrationSlice';
+import { RootState } from '../../redux/store';
 
 const SignUp: React.FC = () => {
+    const dispatch = useDispatch();
+    const registrationStatus = useSelector((state: RootState) => state.registration.status);
+    const registrationError = useSelector((state: RootState) => state.registration.error);
+    const navigate = useNavigate();
+
     const [isFocused, setIsFocused] = useState<boolean>(false);
     const [isValid, setIsValid] = useState<boolean>(true);
     const [email, setEmail] = useState<string>('');
@@ -101,6 +112,15 @@ const SignUp: React.FC = () => {
         }
     };
 
+    const handleSignUp = async (e) => {
+        e.preventDefault();
+        // Dispatch the register action
+        await dispatch(registerUser({ email, password: pass }));
+        if (registrationStatus === "succeeded") {
+            navigate(`/`);
+        }
+    };
+
     return (
         <>
             <div className="w-screen h-screen font-inter">
@@ -166,7 +186,13 @@ const SignUp: React.FC = () => {
                             </div>
                         </div>
 
-                        <button className="mt-[30px] w-full rounded-lg border-2 border-[#6941C6] bg-[#6941C6] font-semibold text-white py-[10px] px-[18px] hover:bg-[#9062fb] hover:border-[#9062fb]">Sign Up</button>
+                        <button
+                            className="mt-[30px] w-full rounded-lg border-2 border-[#6941C6] bg-[#6941C6] font-semibold text-white py-[10px] px-[18px] hover:bg-[#9062fb] hover:border-[#9062fb]"
+                            onClick={handleSignUp}
+                            disabled={registrationStatus === 'loading'}
+                        >
+                            {registrationStatus === 'loading' ? 'Loading...' : 'Sign Up'}
+                        </button>
 
 
 
@@ -176,6 +202,7 @@ const SignUp: React.FC = () => {
                         </h1>
                     </div>
                 </div>
+                <ToastContainer></ToastContainer>
             </div>
         </>
     );

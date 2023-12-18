@@ -27,7 +27,7 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (credentials: 
 
         // return response.data;
     } catch (error) {
-        toast.success(`Login Failed: ${JSON.stringify(error.response.data)}`);
+        toast.error(`Login Failed: ${JSON.stringify(error.response.data)}`);
         throw error.response.data;
     }
 });

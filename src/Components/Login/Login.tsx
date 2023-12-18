@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../redux/authSlice'; // Update the path ../redux/authSlice
 import { RootState } from '../../redux/store';
 import store from '../../redux/store';
@@ -11,11 +12,14 @@ const Login: React.FC = () => {
     const dispatch = useDispatch();
     const authStatus = useSelector((state: RootState) => state.auth.status);
     const authError = useSelector((state: RootState) => state.auth.error);
+    const navigate = useNavigate();
 
     const [isFocused, setIsFocused] = useState<boolean>(false);
     const [isValid, setIsValid] = useState<boolean>(true);
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+
+
 
     const handleFocus = () => {
         setIsFocused(true);
@@ -42,11 +46,16 @@ const Login: React.FC = () => {
 
         // Dispatch the login action
         dispatch(loginUser({ email, password }));
+        if (authStatus === "succeeded") {
+
+            navigate(`/`);
+        }
     };
 
     useEffect(() => {
         if (authStatus === 'failed') {
             // Handle authentication error (e.g., display an error message)
+            // toast.error('Authentication error:', authError);
             console.log('Authentication error:', authError);
         }
     }, [authStatus, authError]);
@@ -108,7 +117,11 @@ const Login: React.FC = () => {
                             <input className="mt-0.5 shadow appearance-none border rounded-lg w-full py-[10px] px-[14px] text-gray-700 leading-tight focus:outline-none focus:border-[#9E7AF4] focus:ring-4 focus:ring-[#dbc4fc]" id="username" type="password" placeholder="Enter Password" onChange={handlePassChange} />
                         </div>
 
-                        <button className="mt-[30px] w-full rounded-lg border-2 border-[#6941C6] bg-[#6941C6] font-semibold text-white py-[10px] px-[18px] hover:bg-[#9062fb] hover:border-[#9062fb]" type='submit' onClick={handleLogin}>Sign In</button>
+                        <button className="mt-[30px] w-full rounded-lg border-2 border-[#6941C6] bg-[#6941C6] font-semibold text-white py-[10px] px-[18px] hover:bg-[#9062fb] hover:border-[#9062fb]" type='submit' onClick={handleLogin}
+                            disabled={authStatus === 'loading'}
+                        >
+                            {authStatus === 'loading' ? 'Loading...' : 'Sign In'}
+                        </button>
 
                         <h1 className="font-medium mt-6">
                             <span className="text-[#B0B7C3]">Don’t have an account?</span>

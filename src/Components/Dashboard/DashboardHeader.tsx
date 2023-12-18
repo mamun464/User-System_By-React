@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { CiSearch } from "react-icons/ci";
 import { FiSettings } from "react-icons/fi";
 import { LuBell } from "react-icons/lu";
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import axios from 'axios';
 
 
 const DashboardHeader: React.FC = () => {
@@ -13,6 +16,34 @@ const DashboardHeader: React.FC = () => {
         <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : ''} to="dashboard/">Task</NavLink> </li>
         <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : ''} to="dashboard/">Reporting</NavLink> </li>
     </>
+
+    const dispatch = useDispatch();
+    const userId = localStorage.getItem('id');
+    const authStatus = useSelector((state: RootState) => state.auth.status);
+
+    const [userData, setUserData] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                if (userId) {
+                    const response = await axios.get(`https://reqres.in/api/users/${userId}`);
+                    setUserData(response.data.data);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchUserData();
+    }, [userId, authStatus]);
+
+    console.log(userData)
+
+
     return (
         <>
 
@@ -53,7 +84,14 @@ const DashboardHeader: React.FC = () => {
                                 <p className='p-[10px]'><LuBell /></p>
                             </div>
                             <div>
-                                <img src="https://i.ibb.co/rcYfSrY/Avatar.png" alt="User_pic" />
+                                {isLoading ? (
+                                    <div>Loading...</div>
+                                ) : (
+                                    <img
+                                        src={userData?.avatar || 'https://i.ibb.co/rcYfSrY/Avatar.png'}
+                                        alt='User_pic'
+                                        style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+                                )}
                             </div>
                         </div>
                     </div>
