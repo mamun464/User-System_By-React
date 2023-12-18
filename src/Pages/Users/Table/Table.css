@@ -1,7 +1,63 @@
-.bgColor {
-    background-color: rgba(249, 245, 255, 1);
+/* Default styles for the checkbox */
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    /* Align items vertically center */
+    position: relative;
+    padding-left: 25px;
+    cursor: pointer;
 }
 
-.customColor {
-    color: rgba(127, 86, 217, 1);
+/* Default background color and border color */
+.custom-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Default checkbox design */
+.checkmark {
+    position: absolute;
+    top: 50%;
+    /* Align the top of the checkbox to the vertical center */
+    transform: translateY(-50%);
+    /* Adjust the position to center vertically */
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    /* Add border-radius property */
+}
+
+/* Style for the checked checkbox */
+.custom-checkbox input:checked~.checkmark {
+    background-color: rgba(249, 245, 255, 1);
+    border: 1px solid rgba(127, 86, 217, 1);
+    border-radius: 5px;
+    /* Add border-radius property */
+}
+
+/* Style for the checkmark/indicator */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when the checkbox is checked */
+.custom-checkbox input:checked~.checkmark:after {
+    display: block;
+}
+
+/* Position and style for the checkmark icon */
+.checkmark:after {
+    left: 7px;
+    top: 2px;
+    width: 6px;
+    height: 12px;
+    border: solid rgba(127, 86, 217, 1);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
 }
