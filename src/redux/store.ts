@@ -5,8 +5,9 @@ import registrationReducer from './registrationSlice'; // Import the registratio
 
 const store = configureStore({
     reducer: {
-        auth: authReducer,
+
         registration: registrationReducer, // Add the registration slice
+        auth: authReducer,
     },
 });
 
