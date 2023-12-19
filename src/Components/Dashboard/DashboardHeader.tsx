@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { CiSearch } from "react-icons/ci";
 import { FiSettings } from "react-icons/fi";
 import { LuBell } from "react-icons/lu";
@@ -8,10 +8,12 @@ import { RootState } from '../../redux/store';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaPowerOff } from "react-icons/fa";
+import ReactTooltip from 'react-tooltip';
 
 
 const DashboardHeader: React.FC = () => {
-
+    const navigate = useNavigate();
     const navBar = <>
         <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md ' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="/dashboard">Home</NavLink> </li>
         <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="users/">Users</NavLink> </li>
@@ -33,6 +35,13 @@ const DashboardHeader: React.FC = () => {
     if (regStatus === 'succeeded') {
 
         toast.success(`Registration Successful`);
+
+    }
+
+    const handleLogout = () => {
+        localStorage.removeItem('id');
+        localStorage.removeItem('user');
+        navigate('/dashboard');
 
     }
 
@@ -98,7 +107,7 @@ const DashboardHeader: React.FC = () => {
                                 <p className='p-[10px]'><FiSettings /></p>
                                 <p className='p-[10px]'><LuBell /></p>
                             </div>
-                            <div>
+                            <div className='flex items-center gap-2'>
                                 {isLoading ? (
                                     <div>Loading...</div>
                                 ) : (
@@ -107,7 +116,14 @@ const DashboardHeader: React.FC = () => {
                                         alt='User_pic'
                                         style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
                                 )}
+                                <span className='text-[#D6BBFB] text-xl cursor-pointer hover:text-red-600 '
+                                    onClick={() => {
+                                        handleLogout();
+                                    }}
+                                ><FaPowerOff /></span>
+                                {/* <ReactTooltip effect='solid' /> */}
                             </div>
+
                         </div>
                     </div>
                 </div>
