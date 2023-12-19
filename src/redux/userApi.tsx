@@ -5,8 +5,8 @@ export const userApi = createApi({
     reducerPath: "userApi",
     baseQuery: fetchBaseQuery({ baseUrl: "https://reqres.in/" }),
     endpoints: (builder) => ({
-        userList: builder.query<Userlist[], void>({
-            query: () => `/api/users`
+        userList: builder.query<Userlist[]>({
+            query: (page) => `/api/users?page=${page}`,
         })
     })
 })
