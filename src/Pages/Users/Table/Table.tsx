@@ -13,11 +13,7 @@ const UserTable: React.FC = () => {
     const [selectAllChecked, setSelectAllChecked] = useState(false);
     const [rowCheckboxes, setRowCheckboxes] = useState<boolean[]>([]);
 
-    useEffect(() => {
-        // Step 2: Update the header checkbox state based on the individual row checkboxes
-        const allChecked = rowCheckboxes.every((isChecked) => isChecked);
-        setSelectAllChecked(allChecked);
-    }, [rowCheckboxes]);
+
 
     // Step 3: Handle the click event on the header checkbox to toggle row checkboxes
     const handleSelectAllChange = () => {

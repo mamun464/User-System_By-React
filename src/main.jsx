@@ -13,6 +13,7 @@ import Users from './Pages/Users/Users.tsx';
 
 import { Provider } from 'react-redux';
 import store from './redux/store.ts';
+import ErrorPage from './Components/ErrorPage/ErrorPage.jsx';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Home></Home>,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       {
         path: "users/",
