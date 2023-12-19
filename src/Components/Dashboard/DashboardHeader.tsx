@@ -6,9 +6,12 @@ import { LuBell } from "react-icons/lu";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const DashboardHeader: React.FC = () => {
+
     const navBar = <>
         <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : ''} to="/">Home</NavLink> </li>
         <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : ''} to="users/">Users</NavLink> </li>
@@ -20,6 +23,18 @@ const DashboardHeader: React.FC = () => {
     const dispatch = useDispatch();
     const userId = localStorage.getItem('id');
     const authStatus = useSelector((state: RootState) => state.auth.status);
+    const regStatus = useSelector((state: RootState) => state.registration.status);
+
+    if (authStatus === 'succeeded') {
+
+        toast.success(`Login Successful`);
+
+    }
+    if (regStatus === 'succeeded') {
+
+        toast.success(`Registration Successful`);
+
+    }
 
     const [userData, setUserData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -96,6 +111,7 @@ const DashboardHeader: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                <ToastContainer></ToastContainer>
             </div>
         </>
     );

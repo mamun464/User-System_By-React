@@ -24,7 +24,7 @@ export const registerUser = createAsyncThunk('registration/registerUser', async 
         console.log("-------------->", response.data)
         localStorage.setItem('id', JSON.stringify(response.data.id));
         localStorage.setItem('user', JSON.stringify(response.data));
-        toast.success(`registration Successful`);
+        // toast.success(`registration Successful `);
 
 
         // return response.data;

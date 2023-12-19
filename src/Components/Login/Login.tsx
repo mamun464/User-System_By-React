@@ -46,19 +46,18 @@ const Login: React.FC = () => {
 
         // Dispatch the login action
         dispatch(loginUser({ email, password }));
-        if (authStatus === "succeeded") {
 
-            navigate(`/`);
-        }
+
     };
 
     useEffect(() => {
-        if (authStatus === 'failed') {
-            // Handle authentication error (e.g., display an error message)
-            // toast.error('Authentication error:', authError);
-            console.log('Authentication error:', authError);
+        if (authStatus === 'succeeded') {
+            // Navigate here when login is successful
+            // toast.success(`Login Successful`);
+            navigate('/');
+
         }
-    }, [authStatus, authError]);
+    }, [authStatus, authError, navigate]);
 
 
     return (

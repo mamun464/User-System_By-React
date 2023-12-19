@@ -20,9 +20,9 @@ const initialState: AuthState = {
 export const loginUser = createAsyncThunk('auth/loginUser', async (credentials: { email: string; password: string }) => {
     try {
         const response = await axios.post('https://reqres.in/api/login', credentials); // Replace with your API endpoint
-        console.log("-------------->", response.data)
+
         localStorage.setItem('user', JSON.stringify(response.data));
-        toast.success(`Login Successful`);
+
 
 
         // return response.data;

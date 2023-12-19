@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 
@@ -116,10 +116,18 @@ const SignUp: React.FC = () => {
         e.preventDefault();
         // Dispatch the register action
         await dispatch(registerUser({ email, password: pass }));
-        if (registrationStatus === "succeeded") {
-            navigate(`/`);
-        }
+
     };
+
+    useEffect(() => {
+
+        if (registrationStatus === 'succeeded') {
+            // Navigate here when login is successful
+            toast.success(`Registration Successful`);
+            navigate('/');
+
+        }
+    }, [registrationStatus, navigate]);
 
     return (
         <>
