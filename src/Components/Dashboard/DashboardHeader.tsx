@@ -13,11 +13,11 @@ import 'react-toastify/dist/ReactToastify.css';
 const DashboardHeader: React.FC = () => {
 
     const navBar = <>
-        <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md ' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="/">Home</NavLink> </li>
+        <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md ' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="/dashboard">Home</NavLink> </li>
         <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="users/">Users</NavLink> </li>
-        <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="dashboard/">Project</NavLink> </li>
-        <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="dashboard/">Task</NavLink> </li>
-        <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="dashboard/">Reporting</NavLink> </li>
+        <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="Project/">Project</NavLink> </li>
+        <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="Task/">Task</NavLink> </li>
+        <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="Reporting/">Reporting</NavLink> </li>
     </>
 
     const dispatch = useDispatch();

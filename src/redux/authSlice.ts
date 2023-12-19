@@ -5,6 +5,11 @@ import { Navigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+export const isLoggedIn = () => {
+    let data = localStorage.getItem("user");
+    if (data != null) return true;
+    else return false;
+}
 interface AuthState {
     user: any; // You might want to define a User type
     status: 'idle' | 'loading' | 'succeeded' | 'failed';

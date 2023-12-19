@@ -14,6 +14,8 @@ import Users from './Pages/Users/Users.tsx';
 import { Provider } from 'react-redux';
 import store from './redux/store.ts';
 import ErrorPage from './Components/ErrorPage/ErrorPage.jsx';
+import Dashboard from './Pages/Dashboard/Dashboard.tsx';
+import PrivateRoute from './Pages/PrivateRoute/PrivateRoute.tsx';
 
 const router = createBrowserRouter([
   {
@@ -26,13 +28,18 @@ const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <Home></Home>,
+    element: <PrivateRoute><Home></Home></PrivateRoute>,
     errorElement: <ErrorPage></ErrorPage>,
     children: [
       {
         path: "users/",
-        element: <Users></Users>
-      }
+        element: <PrivateRoute><Users></Users></PrivateRoute>
+      },
+      {
+        path: "dashboard/",
+        element: <PrivateRoute><Dashboard></Dashboard></PrivateRoute>
+      },
+
     ],
   },
 ]);
