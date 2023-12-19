@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Table.css';
 import { FaArrowDown } from 'react-icons/fa6';
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -9,6 +9,31 @@ import CustomCheckbox from './CustomCheckBox/CustomCheckbox';
 
 
 const UserTable: React.FC = () => {
+    // Step 1: Separate state for the header checkbox and individual row checkboxes
+    const [selectAllChecked, setSelectAllChecked] = useState(false);
+    const [rowCheckboxes, setRowCheckboxes] = useState<boolean[]>([]);
+
+    useEffect(() => {
+        // Step 2: Update the header checkbox state based on the individual row checkboxes
+        const allChecked = rowCheckboxes.every((isChecked) => isChecked);
+        setSelectAllChecked(allChecked);
+    }, [rowCheckboxes]);
+
+    // Step 3: Handle the click event on the header checkbox to toggle row checkboxes
+    const handleSelectAllChange = () => {
+        const newSelectAllChecked = !selectAllChecked;
+        setSelectAllChecked(newSelectAllChecked);
+        setRowCheckboxes(Array(data?.data.length).fill(newSelectAllChecked));
+    };
+
+    // Handle the click event on individual row checkboxes
+    const handleRowCheckboxChange = (index: number) => {
+        const newRowCheckboxes = [...rowCheckboxes];
+        newRowCheckboxes[index] = !newRowCheckboxes[index];
+        setRowCheckboxes(newRowCheckboxes);
+    };
+
+
     const [currentPage, setCurrentPage] = useState(1);
     const { data, error, isLoading, isFetching, isSuccess } = useUserListQuery(
         currentPage
@@ -38,7 +63,8 @@ const UserTable: React.FC = () => {
         ];
 
         // Get a random index within the range of the array length
-        const randomIndex = Math.floor(Math.random() * dummyJobs.length);
+        const randomIndex = index
+        //  Math.floor(Math.random() * dummyJobs.length);
         // index;
 
         // Get a random job object
@@ -74,6 +100,8 @@ const UserTable: React.FC = () => {
                             <div className="flex items-center gap-2">
                                 <span>
                                     <CustomCheckbox
+                                        checked={selectAllChecked}
+                                        onChange={handleSelectAllChange}
                                     />
                                 </span>
                                 User Info <FaArrowDown />
@@ -104,8 +132,14 @@ const UserTable: React.FC = () => {
                                     <td className="w-1/4 p-4">
                                         <div className='flex gap-7'>
                                             <div className="flex items-center">
-                                                <CustomCheckbox></CustomCheckbox>
-                                                {/* <input id={`checkbox-table-search-${index}`} type="checkbox" className="w-4 h-4" /> */}
+
+                                                <CustomCheckbox
+                                                    id={`checkbox-table-search-${index}`}
+                                                    type="checkbox"
+                                                    className="w-4 h-4"
+                                                    checked={rowCheckboxes[index]}
+                                                    onChange={() => handleRowCheckboxChange(index)}
+                                                />
                                                 <label htmlFor={`checkbox-table-search-${index}`} className="sr-only">checkbox</label>
                                             </div>
                                             <div className="flex items-center">
@@ -133,19 +167,19 @@ const UserTable: React.FC = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className='flex gap-4 text-xl'>
-                                            <span className='cursor-pointer'><RiDeleteBinLine /></span>
-                                            <span className='cursor-pointer'><LuPencil /></span>
+                                            <span className='cursor-pointer hover:text-red-500'><RiDeleteBinLine /></span>
+                                            <span className='cursor-pointer hover:text-green-400 '><LuPencil /></span>
                                         </div>
                                     </td>
                                 </tr>
                             );
                         })}
 
-                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                         <td className="w-1/4 pl-4">
                             <div className='flex gap-7'>
                                 <button
-                                    className='text-[#344054] py-2 px-[14px] text-[14px] font-semibold bg-[#fff] rounded-lg custom-import flex items-center gap-2'
+                                    className='text-[#344054] py-2 px-[14px] text-[14px] font-semibold bg-[#fff] rounded-lg custom-import flex items-center gap-2 hover:bg-[#6941c6ae] hover:text-[#fff]'
                                     onClick={handlePreviousPage}
                                     disabled={isFistPage}
                                     style={FirstButtonStyles}
@@ -164,7 +198,7 @@ const UserTable: React.FC = () => {
                         <td className="pr-4">
                             <div className='flex justify-end gap-7'>
                                 <button
-                                    className='text-[#344054] py-2 px-[14px] text-[14px] font-semibold bg-[#fff] rounded-lg custom-import flex items-center gap-2'
+                                    className='text-[#344054] py-2 px-[14px] text-[14px] font-semibold bg-[#fff] rounded-lg custom-import flex items-center gap-2 hover:bg-[#6941c6ae] hover:text-[#fff]'
                                     onClick={handleNextPage}
                                     disabled={isLastPage}
                                     style={LastButtonStyles}

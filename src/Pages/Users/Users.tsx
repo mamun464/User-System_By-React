@@ -12,12 +12,12 @@ const Users = () => {
                     {/* left */}
                     <h1 className='text-[#101828] text-2xl font-medium'>Users</h1>
                     <div className='flex gap-3'>
-                        <button className='text-[#344054] py-[10px] px-4 text-[14px] font-semibold bg-[#fff] rounded-lg custom-import flex items-center gap-2'
+                        <button className='text-[#344054] py-[10px] px-4 text-[14px] font-semibold bg-[#fff] rounded-lg custom-import flex items-center gap-2 hover:bg-[#9c76f6] hover:text-white'
                         ><FiUploadCloud />
                             <span>Import</span>
                         </button>
 
-                        <button className='text-[14px] font-semibold bg-[#fff] rounded-lg py-[10px] px-4 text-[#fff] custom-add flex items-center gap-2'
+                        <button className='text-[14px] font-semibold bg-[#fff] rounded-lg py-[10px] px-4 text-[#fff] custom-add flex items-center gap-2 hover:bg-[#9c76f6] hover:text-white'
                         ><IoMdAdd /> Add User</button>
                     </div>
                 </div>
