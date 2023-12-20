@@ -14,6 +14,7 @@ import ReactTooltip from 'react-tooltip';
 
 const DashboardHeader: React.FC = () => {
     const navigate = useNavigate();
+    const [toastShow, setToastShow] = useState(0)
     const navBar = <>
         <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md ' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="/dashboard">Home</NavLink> </li>
         <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="users/">Users</NavLink> </li>
@@ -27,21 +28,33 @@ const DashboardHeader: React.FC = () => {
     const authStatus = useSelector((state: RootState) => state.auth.status);
     const regStatus = useSelector((state: RootState) => state.registration.status);
 
-    if (authStatus === 'succeeded') {
+    const [loginToastShown, setLoginToastShown] = useState(false);
+    const [regToastShown, setRegToastShown] = useState(false);
 
-        toast.success(`Login Successful`);
+    useEffect(() => {
+        if (authStatus === 'succeeded' && !loginToastShown) {
+            console.log("Showing---------------------------->");
 
-    }
-    if (regStatus === 'succeeded') {
+            toast.success(`Login Successful-1`);
+            setLoginToastShown(true);
 
-        toast.success(`Registration Successful`);
 
-    }
+        }
+        if (regStatus === 'succeeded' && !regToastShown) {
+
+            toast.success(`Registration Successful-1`);
+            setRegToastShown(true);
+        }
+    }, []);
+
+
+
 
     const handleLogout = () => {
         localStorage.removeItem('id');
         localStorage.removeItem('user');
-        navigate('/dashboard');
+        window.location.reload();
+        // navigate('/login');
 
     }
 
