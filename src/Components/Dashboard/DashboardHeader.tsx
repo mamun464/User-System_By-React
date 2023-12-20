@@ -33,16 +33,16 @@ const DashboardHeader: React.FC = () => {
 
     useEffect(() => {
         if (authStatus === 'succeeded' && !loginToastShown) {
-            console.log("Showing---------------------------->");
+            // console.log("Showing---------------------------->");
 
-            toast.success(`Login Successful-1`);
+            toast.success(`Login Successful`);
             setLoginToastShown(true);
 
 
         }
         if (regStatus === 'succeeded' && !regToastShown) {
 
-            toast.success(`Registration Successful-1`);
+            toast.success(`Registration Successful`);
             setRegToastShown(true);
         }
     }, []);
