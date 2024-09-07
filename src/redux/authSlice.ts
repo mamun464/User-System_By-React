@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import BASE_URL from '../../public/config';
 
 export const isLoggedIn = () => {
     let data = localStorage.getItem("user");
@@ -22,9 +23,9 @@ const initialState: AuthState = {
     error: null,
 };
 
-export const loginUser = createAsyncThunk('auth/loginUser', async (credentials: { email: string; password: string }) => {
+export const loginUser = createAsyncThunk('auth/loginUser', async (credentials: { phone_no: string; password: string }) => {
     try {
-        const response = await axios.post('https://reqres.in/api/login', credentials); // Replace with your API endpoint
+        const response = await axios.post(`${BASE_URL}/api/user/login/`, credentials); // Replace with your API endpoint
 
         localStorage.setItem('user', JSON.stringify(response.data));
 
@@ -32,7 +33,7 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (credentials: 
 
         // return response.data;
     } catch (error) {
-        toast.error(`Login Failed: ${JSON.stringify(error.response.data)}`);
+        toast.error(`Login Failed: ${error.response.data.message}`);
         throw error.response.data;
     }
 });

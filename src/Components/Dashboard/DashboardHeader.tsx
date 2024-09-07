@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { CiSearch } from "react-icons/ci";
 import { FiSettings } from "react-icons/fi";
@@ -9,12 +9,13 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaPowerOff } from "react-icons/fa";
-import ReactTooltip from 'react-tooltip';
+import { HiMiniBarsArrowDown } from "react-icons/hi2";
 
 
 const DashboardHeader: React.FC = () => {
     const navigate = useNavigate();
     const [toastShow, setToastShow] = useState(0)
+    const componentRef = useRef(null);
     const navBar = <>
         <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md ' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="/dashboard">Home</NavLink> </li>
         <li> <NavLink className={({ isActive }) => isActive ? 'bg-[#7F56D9] py-2 px-3 rounded-md' : 'hover:bg-[#7F56D9] py-2 px-3 rounded-md'} to="users/">Users</NavLink> </li>
@@ -30,12 +31,18 @@ const DashboardHeader: React.FC = () => {
 
     const [loginToastShown, setLoginToastShown] = useState(false);
     const [regToastShown, setRegToastShown] = useState(false);
+    const [isVisible, setIsVisible] = useState(window.innerWidth < 850);
+
+    useEffect(() => {
+        const handleResize = () => setIsVisible(window.innerWidth < 850);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         if (authStatus === 'succeeded' && !loginToastShown) {
             // console.log("Showing---------------------------->");
 
-            toast.success(`Login Successful`);
             setLoginToastShown(true);
 
 
@@ -59,86 +66,177 @@ const DashboardHeader: React.FC = () => {
     }
 
     const [userData, setUserData] = useState<any>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-
+    const [isHovered, setIsHovered] = useState(false);
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                if (userId) {
-                    const response = await axios.get(`https://reqres.in/api/users/${userId}`);
-                    setUserData(response.data.data);
+        const storedUserData = localStorage.getItem('user');
+        if (storedUserData) {
+            setUserData(JSON.parse(storedUserData)); // Parse and set the user data
+        }
+    }, []);
+
+    // Listen for changes to localStorage and update state in real-time
+    useEffect(() => {
+        const handleStorageChange = (event: StorageEvent) => {
+            if (event.key === 'user') {
+                const updatedUserData = localStorage.getItem('user');
+                if (updatedUserData) {
+                    setUserData(JSON.parse(updatedUserData)); // Update state with new user data
                 }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            } finally {
-                setIsLoading(false);
             }
         };
 
-        fetchUserData();
-    }, [userId, authStatus]);
+        // Add event listener to detect localStorage changes
+        window.addEventListener('storage', handleStorageChange);
 
-    console.log(userData)
+        // Cleanup the event listener when the component unmounts
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (componentRef.current && !componentRef.current.contains(event.target)) {
+                setIsHovered(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    console.log(userData?.user_data)
 
 
     return (
         <>
 
-            <div className='bg-[#6941C6] py-8 font-inter'>
+            <div className='bg-[#6941C6] py-5 font-inter'>
                 <div className='max-w-7xl mx-auto'>
                     <div className='flex justify-between'>
                         {/* right Part */}
                         <div className='flex items-center justify-between gap-7'>
                             {/* Logo and Stuck */}
-                            <div className='flex gap-3 items-center'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="34" viewBox="0 0 40 34" fill="none">
-                                    <g clip-path="url(#clip0_302_17319)">
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M38.9771 19.6145L37.4945 17.5863H38.411C38.6572 17.5859 38.8836 17.4688 39.0015 17.2808C39.1194 17.0927 39.11 16.8638 38.9771 16.6835L30.3986 4.95937C30.2762 4.79036 30.0621 4.68838 29.8325 4.68971H9.25223C9.02263 4.68838 8.80854 4.79036 8.68617 4.95937L0.107676 16.6835C-0.0252722 16.8638 -0.0346328 17.0927 0.0832608 17.2808C0.201155 17.4688 0.427535 17.5859 0.673736 17.5863H1.59021L0.107676 19.6145C-0.0252722 19.7948 -0.0346328 20.0238 0.0832608 20.2118C0.201155 20.3998 0.427535 20.5169 0.673736 20.5173H1.59021L0.107676 22.5456C-0.0252722 22.7258 -0.0346328 22.9548 0.0832608 23.1428C0.201155 23.3308 0.427535 23.448 0.673736 23.4483H1.59021L0.107676 25.4766C-0.0252722 25.6569 -0.0346328 25.8858 0.0832608 26.0739C0.201155 26.2619 0.427535 26.379 0.673736 26.3794H1.59021L0.107676 28.4076C-0.0252722 28.5879 -0.0346328 28.8169 0.0832608 29.0049C0.201155 29.1929 0.427535 29.31 0.673736 29.3104H38.411C38.6572 29.31 38.8836 29.1929 39.0015 29.0049C39.1194 28.8169 39.11 28.5879 38.9771 28.4076L37.4945 26.3794H38.411C38.6572 26.379 38.8836 26.2619 39.0015 26.0739C39.1194 25.8858 39.11 25.6569 38.9771 25.4766L37.4945 23.4483H38.411C38.6572 23.448 38.8836 23.3308 39.0015 23.1428C39.1194 22.9548 39.11 22.7258 38.9771 22.5456L37.4945 20.5173H38.411C38.6572 20.5169 38.8836 20.3998 39.0015 20.2118C39.1194 20.0238 39.11 19.7948 38.9771 19.6145Z" fill="#9E7AF4" />
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.26113 9.12381C9.01545 9.12355 8.7894 9.007 8.6712 8.81965C8.55299 8.63229 8.56137 8.40382 8.69305 8.2234L9.79283 6.71978C9.91658 6.55066 10.1311 6.44828 10.3616 6.44836H13.4776C13.8498 6.44836 14.1515 6.71082 14.1515 7.03457C14.1515 7.35832 13.8498 7.62078 13.4776 7.62078H10.7315L9.83056 8.85181C9.70684 9.02133 9.49197 9.12397 9.26113 9.12381Z" fill="white" />
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M38.411 20.5173H0.673736C0.427535 20.517 0.201155 20.3999 0.0832608 20.2118C-0.0346328 20.0238 -0.0252722 19.7948 0.107676 19.6146L1.59021 17.5863H37.4945L38.9771 19.6146C39.11 19.7948 39.1194 20.0238 39.0015 20.2118C38.8836 20.3999 38.6572 20.517 38.411 20.5173Z" fill="#CBBBF0" />
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M38.411 23.4484H0.673736C0.427535 23.448 0.201155 23.3309 0.0832608 23.1429C-0.0346328 22.9548 -0.0252722 22.7259 0.107676 22.5456L1.59021 20.5173H37.4945L38.9771 22.5456C39.11 22.7259 39.1194 22.9548 39.0015 23.1429C38.8836 23.3309 38.6572 23.448 38.411 23.4484Z" fill="#ECE8F5" />
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M38.411 26.3794H0.673736C0.427535 26.379 0.201155 26.2619 0.0832608 26.0739C-0.0346328 25.8859 -0.0252722 25.6569 0.107676 25.4766L1.59021 23.4484H37.4945L38.9771 25.4766C39.11 25.6569 39.1194 25.8859 39.0015 26.0739C38.8836 26.2619 38.6572 26.379 38.411 26.3794Z" fill="#CBBBF0" />
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M38.411 29.3104H0.673736C0.427535 29.3101 0.201155 29.1929 0.0832608 29.0049C-0.0346328 28.8169 -0.0252722 28.5879 0.107676 28.4077L1.59021 26.3794H37.4945L38.9771 28.4077C39.11 28.5879 39.1194 28.8169 39.0015 29.0049C38.8836 29.1929 38.6572 29.3101 38.411 29.3104Z" fill="#ECE8F5" />
-                                    </g>
-                                    <defs>
-                                        <clipPath id="clip0_302_17319">
-                                            <rect width="39.0851" height="34" fill="white" />
-                                        </clipPath>
-                                    </defs>
-                                </svg>
-                                <h1 className='text-[#fff] text-xl font-bold w-24'>Stack</h1>
+                            <div className='hidden smaller-than-850:flex smaller-than-850:gap-3 smaller-than-850:items-center'>
+                                <img className='w-16' src="/headerLogo.png" alt="Not_Found" />
+                                <h1 className='hidden smaller-than-850:block text-[#fff] text-xl font-bold w-24'>
+                                    MM System
+                                </h1>
+
                             </div>
                             {/* Nav bar */}
-                            <div className='flex list-none gap-7 text-[#F4EBFF] font-medium'>
+                            <div className='hidden smaller-than-850:flex smaller-than-850:list-none gap-7 smaller-than-850:text-[#F4EBFF] smaller-than-850:font-medium'>
                                 {navBar}
+                            </div>
+                            <div style={{ display: isVisible ? 'block' : 'none' }} className="drawer">
+                                <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+                                <div className="drawer-content">
+                                    {/* Page content here */}
+                                    <label htmlFor="my-drawer" className="text-white text-2xl ">
+                                        <div className='flex gap-1 items-center'>
+                                            <img className='w-16' src="/headerLogo.png" alt="Not_Found" />
+                                            <HiMiniBarsArrowDown />
+                                        </div>
+
+                                    </label>
+
+                                </div>
+                                <div className="drawer-side">
+                                    <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
+                                    <ul className="menu bg-base-200 text-base-content min-h-full w-60 p-4">
+                                        {/* Sidebar content here */}
+                                        <div className='flex flex-col items-center mb-10 mt-3'>
+                                            <div className='flex items-center'>
+                                                <img className='w-16' src="/headerLogo.png" alt="Not_Found" />
+                                                <h1 className='text-black text-xl font-bold ml-4'>
+                                                    Meal Management System
+                                                </h1>
+                                            </div>
+                                            <hr className='w-full mt-2 border-t-2 border-gray-300' />
+                                        </div>
+
+
+                                        {navBar}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                         {/* right Part */}
-                        <div className='flex gap-4'>
+                        <div className='flex gap-4  justify-center items-center'>
                             <div className='flex text-[#D6BBFB] gap-2 text-xl'>
                                 <p className='p-[10px]'><CiSearch /></p>
                                 <p className='p-[10px]'><FiSettings /></p>
                                 <p className='p-[10px]'><LuBell /></p>
                             </div>
-                            <div className='flex items-center gap-2'>
-                                {isLoading ? (
-                                    <div>Loading...</div>
-                                ) : (
+                            <div className='relative'>
+                                <div
+                                    ref={componentRef}
+                                    className='flex items-center gap-2'
+                                    onMouseEnter={() => setIsHovered(true)}
+                                // onMouseLeave={() => setIsHovered(false)}
+                                >
                                     <img
-                                        src={userData?.avatar || 'https://i.ibb.co/rcYfSrY/Avatar.png'}
+                                        src={userData?.user_data?.user_profile_img || 'https://i.ibb.co/rcYfSrY/Avatar.png'}
                                         alt='User_pic'
-                                        style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+                                        style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+                                    />
+
+
+                                </div>
+
+                                {/* The card is shown when hovering */}
+                                {isHovered && (
+                                    <div
+                                        className="absolute flex right-0 mt-2 py-4 px-4 w-80 bg-white rounded-xl shadow-lg space-y-2"
+                                        style={{ zIndex: 10 }}
+                                    >
+                                        <img
+                                            className="block mx-auto h-24 rounded-full"
+                                            src={userData?.user_data?.user_profile_img || 'https://i.ibb.co/rcYfSrY/Avatar.png'}
+                                            alt="DP"
+                                        />
+                                        <div className="text-center space-y-2">
+                                            <p className="text-lg text-black font-semibold">{userData?.user_data?.fullName}</p>
+                                            <p className="text-slate-500 font-medium">
+                                                {userData?.user_data?.is_superuser
+                                                    ? (userData?.user_data?.is_manager ? "Admin & Manager" : "Admin & Member")
+                                                    : (userData?.user_data?.is_manager ? "Manager" : "Member")}
+                                            </p>
+
+
+                                            <button
+                                                className={`px-4 py-1 text-sm font-semibold rounded-full border ${userData?.user_data?.is_active
+                                                    ? 'text-green-600 border-green-200 hover:text-white hover:bg-green-600 hover:border-transparent focus:ring-green-600'
+                                                    : 'text-red-600 border-red-200 hover:text-white hover:bg-red-600 hover:border-transparent focus:ring-red-600'
+                                                    }`}
+                                                style={{
+                                                    backgroundColor: userData?.user_data?.is_active ? 'transparent' : 'red',
+                                                    color: userData?.user_data?.is_active ? 'green' : 'red'
+                                                }}
+                                                focus={{ outline: 'none' }}
+                                            >
+                                                {userData?.user_data?.is_active ? 'Active' : 'Inactive'}
+                                            </button>
+                                        </div>
+                                        <span
+                                            className='text-[#D6BBFB] text-xl cursor-pointer hover:text-red-600 ml-3.5'
+                                            onClick={handleLogout}
+                                            title="Logout"
+                                        >
+                                            <FaPowerOff />
+                                        </span>
+
+
+                                    </div>
                                 )}
-                                <span className='text-[#D6BBFB] text-xl cursor-pointer hover:text-red-600 '
-                                    onClick={() => {
-                                        handleLogout();
-                                    }}
-                                ><FaPowerOff /></span>
-                                {/* <ReactTooltip effect='solid' /> */}
                             </div>
 
                         </div>
                     </div>
+
                 </div>
                 <ToastContainer></ToastContainer>
             </div>

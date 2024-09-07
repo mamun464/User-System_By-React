@@ -6,6 +6,10 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'smaller-than-850': '850px',
+        'greater-than-850': '850px',
+      },
       colors: {
         customLoginBG: 'var(--White, #FFF)',
         purleLite: '#rgba(214, 187, 251, 1)'
@@ -29,6 +33,22 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('daisyui'),
+  ],
+  daisyui: {
+    themes: [
+      {
+        mytheme: {
+          "primary": "#a991f7",
+          "secondary": "#f6d860",
+          "accent": "#37cbbf",
+          "neutral": "#3d4451",
+          "base-100": "#ffffff",
+        },
+      },
+      'light', // Specify the default theme you want to use
+    ],
+  },
 }
 
