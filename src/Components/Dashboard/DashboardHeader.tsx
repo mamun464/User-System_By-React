@@ -58,6 +58,7 @@ const DashboardHeader: React.FC = () => {
 
 
     const handleLogout = () => {
+        console.log("Logout");
         localStorage.removeItem('id');
         localStorage.removeItem('user');
         window.location.reload();
@@ -94,21 +95,9 @@ const DashboardHeader: React.FC = () => {
         };
     }, []);
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (componentRef.current && !componentRef.current.contains(event.target)) {
-                setIsHovered(false);
-            }
-        };
 
-        document.addEventListener('mousedown', handleClickOutside);
 
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-
-    console.log(userData?.user_data)
+    // console.log(userData?.user_data)
 
 
     return (
@@ -193,44 +182,60 @@ const DashboardHeader: React.FC = () => {
                                         className="absolute flex right-0 mt-2 py-4 px-4 w-80 bg-white rounded-xl shadow-lg space-y-2"
                                         style={{ zIndex: 10 }}
                                     >
+                                        {/* Close Button */}
+                                        <button
+                                            className="absolute top-2 right-2 text-gray-500 hover:text-red-600"
+                                            onClick={() => setIsHovered(false)}// Replace with your close handler function
+                                            title="Close"
+                                        >
+                                            ✖
+                                        </button>
+
                                         <img
                                             className="block mx-auto h-24 rounded-full"
                                             src={userData?.user_data?.user_profile_img || 'https://i.ibb.co/rcYfSrY/Avatar.png'}
                                             alt="DP"
                                         />
                                         <div className="text-center space-y-2">
-                                            <p className="text-lg text-black font-semibold">{userData?.user_data?.fullName}</p>
+                                            <p className="text-lg text-black font-semibold">
+                                                {userData?.user_data?.fullName}
+                                            </p>
                                             <p className="text-slate-500 font-medium">
                                                 {userData?.user_data?.is_superuser
-                                                    ? (userData?.user_data?.is_manager ? "Admin & Manager" : "Admin & Member")
-                                                    : (userData?.user_data?.is_manager ? "Manager" : "Member")}
+                                                    ? userData?.user_data?.is_manager
+                                                        ? 'Admin & Manager'
+                                                        : 'Admin & Member'
+                                                    : userData?.user_data?.is_manager
+                                                        ? 'Manager'
+                                                        : 'Member'}
                                             </p>
 
-
-                                            <button
-                                                className={`px-4 py-1 text-sm font-semibold rounded-full border ${userData?.user_data?.is_active
-                                                    ? 'text-green-600 border-green-200 hover:text-white hover:bg-green-600 hover:border-transparent focus:ring-green-600'
-                                                    : 'text-red-600 border-red-200 hover:text-white hover:bg-red-600 hover:border-transparent focus:ring-red-600'
-                                                    }`}
-                                                style={{
-                                                    backgroundColor: userData?.user_data?.is_active ? 'transparent' : 'red',
-                                                    color: userData?.user_data?.is_active ? 'green' : 'red'
-                                                }}
-                                                focus={{ outline: 'none' }}
-                                            >
-                                                {userData?.user_data?.is_active ? 'Active' : 'Inactive'}
-                                            </button>
+                                            <div className='flex items-center justify-between'>
+                                                <button
+                                                    className={`px-4 py-1 text-sm font-semibold rounded-full border ${userData?.user_data?.is_active
+                                                        ? 'text-green-600 border-green-200 hover:text-white hover:bg-green-600 hover:border-transparent focus:ring-green-600'
+                                                        : 'text-red-600 border-red-200 hover:text-white hover:bg-red-600 hover:border-transparent focus:ring-red-600'
+                                                        }`}
+                                                    style={{
+                                                        backgroundColor: userData?.user_data?.is_active ? 'transparent' : 'red',
+                                                        color: userData?.user_data?.is_active ? 'green' : 'red'
+                                                    }}
+                                                    focus={{ outline: 'none' }}
+                                                >
+                                                    {userData?.user_data?.is_active ? 'Active' : 'Inactive'}
+                                                </button>
+                                                <span
+                                                    className="text-[#D6BBFB] text-xl cursor-pointer hover:text-red-600 ml-3.5"
+                                                    onClick={handleLogout}
+                                                    title="Logout"
+                                                >
+                                                    <FaPowerOff />
+                                                </span>
+                                            </div>
                                         </div>
-                                        <span
-                                            className='text-[#D6BBFB] text-xl cursor-pointer hover:text-red-600 ml-3.5'
-                                            onClick={handleLogout}
-                                            title="Logout"
-                                        >
-                                            <FaPowerOff />
-                                        </span>
-
 
                                     </div>
+
                                 )}
                             </div>
 
