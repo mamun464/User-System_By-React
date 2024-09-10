@@ -97,14 +97,14 @@ const DashboardHeader: React.FC = () => {
 
 
 
-    // console.log(userData?.user_data)
+    console.log(userData?.user_data)
 
 
     return (
         <>
 
             <div className='bg-[#6941C6] py-5 font-inter'>
-                <div className='max-w-7xl mx-auto'>
+                <div className=''>
                     <div className='flex justify-between'>
                         {/* right Part */}
                         <div className='flex items-center justify-between gap-7'>
